@@ -1,6 +1,6 @@
 # Music Player
 ## **Using Vanilla JS, Tailwind CSS & HTML**
-You can view this project [here](). <br>
+You can view this project [here](https://ohadosnat.github.io/Music-Player/carMusicPlayer.html). <br>
 
 ## **The Idea**
 Once again, As I continue my learning journey, I love doing all sorts of projects to practice what I've learned.
@@ -12,7 +12,7 @@ I wanted to make a simple music player that got the following features:
 2. Allow the user to use the functionalities such as "Repeat" and "Shuffle".
 3. Track current/total time in the song.
 4. Dynamic Progress Bar that allows the user to skip certain parts
-5. Change the theme's colour based on the song's album artwork (got the idea from Spotify's android notification song colour)
+5. Change the theme's color based on the song's album artwork (got the idea from Spotify's android notification song color)
 6. Real-Time Clock & Weather
 <br>
 
@@ -20,8 +20,10 @@ With that in mind, I started to code (skipped the design since I used the same c
 
 ## **The Development Process**
 ### **Rough Version (Testing)**
-When I have an idea, I start with a **rough version**, with no styling and basic buttons, to see that everything works.<br>
-![Rough Version of the project to make sure everything works](https://link) <br>
+When I have an idea, I start with a **rough version**, with no styling and basic buttons, to see that everything works (see video below).<br>
+
+https://user-images.githubusercontent.com/79900761/117573123-e966f880-b0de-11eb-85ca-b9b33c6c136c.mp4
+
 Some of the challenges I had to tackle in this stage were:
 1. How to not have duplicates on the "Shuffle" mode:
     - At first, I thought `Math.random()` would do the job, but I quickly realised that it's not a good solution. As I continued to search for solutions, I came across **"Fisher-Yates Shuffle Modern Algorithm"**, which solved my problem right away!<br>
@@ -38,7 +40,7 @@ Some of the challenges I had to tackle in this stage were:
         ```
 2. How to make sure the song tracker is working on shuffle mode:
     - When a user switches off the shuffle mode. I find the index of the current song in the original array and set the tracker to that index.<br>
-    **How I implemented it(Inside the function):**
+    **How I implemented it (Inside the function):**
 
         ```javascript
         tracker = tracks.findIndex(track => track.title === songTitle);
@@ -52,7 +54,7 @@ Some of the challenges I had to tackle in this stage were:
         ```
 4. How to load files that have spaces in their name:
     - I saw a few different solutions, but I ended up using encodeURI().<br>
-    **How I implemented it(Inside the function):**
+    **How I implemented it (Inside the function):**
 
         ```javascript
         // BEFORE: assets/audio/things cant stay the same.mp3
@@ -71,9 +73,9 @@ After finishing all the functionalities that I wanted to achieve in the **rough 
 2. Making sure all the DOM manipulations and Repeat/Shuffle work:
     - Song title, artist, current time in song & song's duration.
     - Next/Previous & Repeat/Shuffle buttons
-3. Change the theme's colour based on the song's album artwork:
+3. Change the theme's color based on the song's album artwork:
     - The solution I found didn't work as I wanted. So I had to change it a bit. <br>
-    **The Idea:** Creating a new `canvas` element with the image, size it down to `1x1` and grabbing the image data. After that, I'm also converting the colour data from `RGB` to `HSL` to control the saturation/lightness later on (using a function).
+    **The Idea:** Creating a new `canvas` element with the image, size it down to `1x1` and grabbing the image data. After that, I'm also converting the color data from `RGB` to `HSL` to control the saturation/lightness later on (using a function).
     - When I had the `HSL` data, I used it on the buttons and based on the lightness, I changed the color lightness so it would look good.
     - Also worth mentioning - The play/pause icon is the darker version of the main color.<br>
     **How I implemented it:**
