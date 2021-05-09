@@ -1,0 +1,19 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "A simple Music Player using JS",
+  "main": "musicPlayer.js",
+  "dependencies": {},
+  "devDependencies": {
+    "autoprefixer": "^10.2.5",
+    "postcss": "^8.2.10",
+    "postcss-cli": "^8.3.1",
+    "tailwindcss": "^2.1.1"
+  },
+  "scripts": {
+    "dev": "NODE_ENV=development postcss assets/css/tailwind.css -o assets/css/styles.css -w",
+    "build": "NODE_ENV=production postcss assets/css/tailwind.css -o assets/css/styles.css"
+  },
+  "author": "Ohad Osnat",
+  "license": "MIT"
+}
