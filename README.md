@@ -1,6 +1,6 @@
 # Music Player
 ## **Using Vanilla JS, Tailwind CSS & HTML**
-You can view this project [here](https://ohadosnat.github.io/Music-Player/carMusicPlayer.html). <br>
+You can view this project [here](https://ohadosnat.github.io/musicPlayer/carMusicPlayer.html). <br>
 
 ## **The Idea**
 Once again, As I continue my learning journey, I love doing all sorts of projects to practice what I've learned.
