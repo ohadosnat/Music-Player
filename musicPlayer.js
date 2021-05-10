@@ -38,7 +38,8 @@ let shuffledTracks = tracks.map(track => track), // copy of the original array t
     currentTrackTime,
     audioElement = new Audio(),
     trackImg = new Image(),
-    currentColor;
+    primaryColor,
+    secondaryColor;
 
 // gets current time for clock
 const getTime = () => {
@@ -54,19 +55,8 @@ const getTime = () => {
 const updateInfo = song => {
     const { title, artist, album, img, file_path } = song;
     trackImg.src = img;
-    getPixel(trackImg).then((hsl) => {
-        document.body.style.backgroundColor = hsl.l < 60 ? `hsl(${hsl.h} ${hsl.s}% ${60}%)` : `hsl(${hsl.h} ${hsl.s}% ${hsl.l}%)`;
-        playControl.style.backgroundColor = hsl.l < 60 ? `hsl(${hsl.h} ${hsl.s}% ${60}%)` : `hsl(${hsl.h} ${hsl.s}% ${hsl.l}%)`;
-        playControl.style.color = hsl.l > 70 ? `hsl(${hsl.h} ${hsl.s}% ${10}%)` : `hsl(${hsl.h} ${hsl.s}% ${hsl.l}%)`;
-        shuffleBtn.style.color = shuffleBtn.classList.contains('active') ? `hsl(${hsl.h} ${hsl.s}% ${60}%)` : 'white';
-        repeatSongs.style.color = repeatSongs.classList.contains('active') ? `hsl(${hsl.h} ${hsl.s}% ${60}%)` : 'white';
-
-        musicIcon.style.color = `hsl(${hsl.h} ${hsl.s}% ${60}%)`;
-
-        progressBar.style.backgroundColor = hsl.l < 60 ? `hsl(${hsl.h} ${hsl.s}% ${60}%)` : `hsl(${hsl.h} ${hsl.s}% ${hsl.l}%)`;
-        progressBarCircle.style.backgroundColor = hsl.l > 70 ? `hsl(${hsl.h} ${hsl.s}% ${10}%)` : `hsl(${hsl.h} ${hsl.s}% ${hsl.l}%)`;
-        currentColor = hsl;
-    })
+    getPixel(trackImg)
+        .then((hsl) => setThemeColor(hsl))
         .catch(err => console.error(err));
     progressBar.style.width = '0%'
     progressBarCircle.style.left = '0%';
@@ -83,14 +73,14 @@ const updateInfo = song => {
             totalSecs = Math.floor(audioElement.duration % 60) < 10 ? `0${Math.floor(audioElement.duration % 60)}` : Math.floor(audioElement.duration % 60);
         currentTime.innerText = '0:00';
         durationTime.innerText = `${totalMin}:${totalSecs}`;
-    }
+    };
 };
 
 const updateCurrentTime = () => {
     let currentMin = Math.floor((audioElement.currentTime / 60) % 60),
         currentSec = Math.floor(audioElement.currentTime % 60) < 10 ? `0${Math.floor(audioElement.currentTime % 60)}` : Math.floor(audioElement.currentTime % 60);
     currentTime.innerText = `${currentMin}:${currentSec}`;
-}
+};
 
 const playAudio = () => {
     if (!playControl.classList.contains('active')) {
@@ -162,6 +152,7 @@ function RGBToHSL(r, g, b) {
         s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1)); // Calculate saturation
 
     // Calculate hue
+
     // No difference
     if (delta == 0)
         h = 0;
@@ -185,6 +176,26 @@ function RGBToHSL(r, g, b) {
     l = +(l * 100).toFixed(1);
 
     return { h, s, l }
+};
+
+// Sets The Theme Color
+const setThemeColor = (hsl) => {
+    // Defines the primary & secondary color
+    primaryColor = hsl.l < 60 ? `hsl(${hsl.h} ${hsl.s}% ${60}%)` : `hsl(${hsl.h} ${hsl.s}% ${hsl.l}%)`;
+    secondaryColor = hsl.l > 70 ? `hsl(${hsl.h} ${hsl.s}% ${10}%)` : `hsl(${hsl.h} ${hsl.s}% ${hsl.l}%)`;
+
+    // Elements by Order - Body -> Progress Bar -> Player Control -> Bottom Icons
+    document.body.style.backgroundColor = primaryColor;
+
+    progressBar.style.backgroundColor = primaryColor;
+    progressBarCircle.style.backgroundColor = secondaryColor;
+
+    playControl.style.backgroundColor = primaryColor;
+    playControl.style.color = secondaryColor;
+    shuffleBtn.style.color = shuffleBtn.classList.contains('active') ? primaryColor : 'white';
+    repeatSongs.style.color = repeatSongs.classList.contains('active') ? primaryColor : 'white';
+
+    musicIcon.style.color = primaryColor;
 };
 
 
@@ -214,11 +225,6 @@ const next = () => {
     };
     clearInterval(currentTrackTime);
     playControl.classList.remove('active')
-    playControl.innerHTML = `
-    <svg class="fill-current w-7" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M29.0391 14.293L11.043 3.29491C10.7398 3.10955 10.3928 3.0083 10.0376 3.00158C9.68232 2.99486 9.3317 3.0829 9.02178 3.25666C8.71186 3.43042 8.45383 3.68361 8.27425 3.99019C8.09466 4.29677 8 4.64566 8 5.00097V26.999C8.00029 27.3542 8.09513 27.7029 8.27479 28.0093C8.45445 28.3157 8.71244 28.5688 9.02226 28.7425C9.33208 28.9162 9.68255 29.0043 10.0377 28.9977C10.3928 28.9911 10.7398 28.8901 11.043 28.7051L29.0391 17.707C29.3314 17.5283 29.5729 17.2774 29.7405 16.9785C29.9081 16.6796 29.9961 16.3427 29.9961 16C29.9961 15.6573 29.9081 15.3204 29.7405 15.0215C29.5729 14.7226 29.3314 14.4717 29.0391 14.293V14.293Z" />
-    </svg>
-    `;
     playAudio();
 };
 
@@ -247,11 +253,6 @@ const previous = () => {
     };
     clearInterval(currentTrackTime);
     playControl.classList.remove('active')
-    playControl.innerHTML = `
-    <svg class="fill-current w-7" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M29.0391 14.293L11.043 3.29491C10.7398 3.10955 10.3928 3.0083 10.0376 3.00158C9.68232 2.99486 9.3317 3.0829 9.02178 3.25666C8.71186 3.43042 8.45383 3.68361 8.27425 3.99019C8.09466 4.29677 8 4.64566 8 5.00097V26.999C8.00029 27.3542 8.09513 27.7029 8.27479 28.0093C8.45445 28.3157 8.71244 28.5688 9.02226 28.7425C9.33208 28.9162 9.68255 29.0043 10.0377 28.9977C10.3928 28.9911 10.7398 28.8901 11.043 28.7051L29.0391 17.707C29.3314 17.5283 29.5729 17.2774 29.7405 16.9785C29.9081 16.6796 29.9961 16.3427 29.9961 16C29.9961 15.6573 29.9081 15.3204 29.7405 15.0215C29.5729 14.7226 29.3314 14.4717 29.0391 14.293V14.293Z" />
-    </svg>
-    `;
     playAudio();
 };
 
@@ -260,7 +261,7 @@ shuffleBtn.addEventListener('click', () => {
     if (!shuffleBtn.classList.contains('active')) {
         console.log('shuffled')
         shuffleBtn.classList.add('active')
-        shuffleBtn.style.color = `hsl(${currentColor.h} ${currentColor.s}% ${60}%)`;
+        shuffleBtn.style.color = primaryColor;
         for (let i = shuffledTracks.length; i > 1; i--) {
             let random = Math.floor(Math.random() * i);
             let temp = shuffledTracks[random];
@@ -281,7 +282,7 @@ repeatSongs.addEventListener('click', () => {
     if (!repeatSongs.classList.contains('active')) {
         console.log('repeat mode is active');
         repeatSongs.classList.add('active');
-        repeatSongs.style.color = `hsl(${currentColor.h} ${currentColor.s}% ${60}%)`;
+        repeatSongs.style.color = primaryColor;
     } else {
         console.log('repeat mode is disabled')
         repeatSongs.classList.remove('active');
